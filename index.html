@@ -1,160 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DANGER⚡⁷⁸⁶x TEAM SIM DATABASE</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: url('background.gif');
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    .box {
-      background: black;
-      border: 2px solid cyan;
-      box-shadow: 0 0 25px cyan;
-      padding: 30px 20px;
-      border-radius: 15px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    .box h2 {
-      color: cyan;
-      font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .box input {
-      width: 94%;
-      padding: 12px;
-      border-radius: 8px;
-      border: none;
-      margin-bottom: 20px;
-      font-size: 16px;q
-      background: white;
-      color: black;
-      box-shadow: inset 0 0 5px cyan;
-    }
-
-    .box button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      margin: 10px 0;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      color: black;
-      background: cyan;
-      box-shadow: 0 0 15px cyan;
-      transition: 0.3s;
-    }
-
-    .box button:hover {
-      transform: scale(1.05);
-      background: linear-gradient(90deg, cyan, cyan);
-    }
-
-    .whatsapp-btn {
-      background: linear-gradient(90deg, #25D366, #128C7E);
-      box-shadow: 0 0 15px #25D366;
-      color: rgba(cyan, green, blue, alpha);
-    }
-
-    #responseBox {
-      background: black;
-      color: white;
-      box-shadow: 0 0 25px cyan;
-      border-radius: 15px;
-      margin-top: 30px;
-      margin-bottom: 30px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h2>🔍DANGER TEAM 786 SIM DATABASE</h2>
-    <input type="text" id="number" placeholder="Enter phone number" required />
-    <button onclick="fetchData()">🔎 Click to Get Details</button>
-
-    <div id="responseBox"></div>
-<button id="shareButton" class="whatsapp-btn" onclick="shareWhatsApp()" style="display: none;">📲 Share on WhatsApp</button>
-    <button id="channelButton" class="whatsapp-btn" onclick="window.open('https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w', '_blank')">📢 Join WhatsApp Channel</button>
-        <button id="channelButton" class="whatsapp-btn" onclick="window.open('https://wa.me/message/GEKZE5CN27C7F1', '_blank')">💬 Contact Developer</button>
-  </div>
-
-  <script>
-    async function fetchData() {
-      const number = document.getElementById("number").value.trim();
-      const responseBox = document.getElementById("responseBox");
-      const shareButton = document.getElementById("shareButton");
-
-      if (!number) {
-        alert("Please enter a phone number.");
-        return;
-      }
-
-      const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://fam-official.serv00.net/sim/api.php?num=${number}`)}`;
-
-      try {
-        const res = await fetch(url);
-        const json = await res.json();
-        const apiData = JSON.parse(json.contents);
-
-        if (apiData.status === "success" && Array.isArray(apiData.data) && apiData.data.length > 0) {
-          const user = apiData.data[0];
-          const content = `
-📞 Mobile: ${user.Mobile || "Not found"}
-👤 Name: ${user.Name || "Not found"}
-🆔 CNIC: ${user.CNIC || "Not found"}
-📍 Address: ${user.Address || "Not found"}
-📶 Operator: ${user.Operator || "Not found"} 
- ♻️ Developer: ${user.developer || "DANGER TECH"}`;
-          responseBox.innerText = content;
-          responseBox.style.display = "block";
-          shareButton.style.display = "inline-block";
-        } else {
-          responseBox.innerHTML = `<p style="color: yellow; font-size: 18px; font-weight: bold;">Data Not Found</p>`;
-          responseBox.style.display = "block";
-          shareButton.style.display = "none";
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DANGER SIM DATABASE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #1e40af, #60a5fa);
         }
-      } catch (e) {
-        responseBox.innerHTML = `<p style="color: red; font-size: 18px; font-weight: bold;">Error fetching data. Please try again later.</p>`;
-        responseBox.style.display = "block";
-        shareButton.style.display = "none";
-      }
-    }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .card {
+            transition: transform 0.3s ease, box-danger 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-danger: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+        }
+        .popup-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            box-danger: 0 10px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .popup-content button {
+            margin-top: 1rem;
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background 0.3s ease;
+        }
+        .popup-content button:hover {
+            background: #1e40af;
+        }
+    </style>
+    <script>
+        // Prevent form resubmission on page reload
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        // Debounce form submission to prevent double-clicks
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            let isSubmitting = false;
+            form.addEventListener('submit', (e) => {
+                if (isSubmitting) {
+                    e.preventDefault();
+                } else {
+                    isSubmitting = true;
+                    setTimeout(() => { isSubmitting = false; }, 2000);
+                }
+            });
+            // Show popup only once per session
+            if (!sessionStorage.getItem('popupShown')) {
+                const popup = document.getElementById('welcome-popup');
+                popup.style.display = 'flex';
+                sessionStorage.setItem('popupShown', 'true');
+            }
+            // Open WhatsApp channel in new tab on button click
+            document.getElementById('join-channel').addEventListener('click', () => {
+                window.open('https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w', '_blank');
+                document.getElementById('welcome-popup').style.display = 'none';
+            });
+        });
+    </script>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Welcome Popup -->
+    <div id="welcome-popup" class="popup-overlay">
+        <div class="popup-content">
+            <h2 class="text-2xl font-bold text-blue-800 mb-4">
+                <a href="https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w" target="_blank" class="hover:underline">Welcome to SIM Details Lookup!</a>
+            </h2>
+            <p class="text-gray-700 mb-4">Join our WhatsApp channel for exclusive gifts and updates!</p>
+            <button id="join-channel">Join Now</button>
+        </div>
+    </div>
 
-    function shareWhatsApp() {
-      const responseBox = document.getElementById("responseBox");
-      const text = encodeURIComponent(responseBox.innerText);
-      const url = `https://wa.me/?text=${text}`;
-      window.open(url, '_blank');
-    }
-  </script>
+    <!-- Header -->
+    <header class="bg-blue-950 text-white py-6 shadow-lg">
+        <div class="container mx-auto text-center px-4">
+            <h1 class="text-3xl sm:text-4xl font-extrabold">SIM Database Lookup</h1>
+            <p class="text-base sm:text-lg mt-2">
+                <a href="https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w" target="_blank" class="hover:underline">Powered by DEVIL MALIK</a>
+            </p>
+        </div>
+    </header>
 
-  <!-- Footer Script -->
-  <script src="https://datkteam786-simdatabase.vercel.app/footer.js"></script>
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center py-8 px-4">
+        <div class="glass-effect p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-3xl">
+            <!-- Search Form -->
+            <form method="POST" class="mb-8">
+                <input type="hidden" name="form_token" value="2eef4136bc2d44810d735ff8c5c471c1">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                    <input 
+                        type="text" 
+                        name="search_term" 
+                        placeholder="Enter Phone Number or CNIC (e.g., 92333563 or 324021402)" 
+                        class="w-full p-4 border border-gray-300 rounded-xl sm:rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 text-gray-800"
+                        value=""
+                        required
+                        pattern="[0-9+]{10,13}"
+                        title="Please enter a valid phone number (e.g., 92333..., 0333..., +92333...) or CNIC"
+                    >
+                    <button 
+                        type="submit" 
+                        class="w-full sm:w-auto bg-blue-600 text-white p-4 rounded-xl sm:rounded-r-xl hover:bg-blue-700 transition duration-300"
+                    >
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <!-- Error Message -->
+            
+            <!-- Results Cards -->
+                    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-950 text-white py-6">
+        <div class="container mx-auto text-center px-4">
+            <p class="text-base sm:text-lg">
+                Developed by <a href="https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w" target="_blank" class="font-bold hover:underline">Shadow Innovations</a>
+            </p>
+            <p class="text-sm mt-2">&copy; 2025 DEVIL MALIK All Rights Reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
