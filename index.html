@@ -4,116 +4,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danger SIM Details Finder</title>
+    <title>Danger SIM Database</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         body {
-            background-color: #f5f5f5;
-            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom right, #1e40af, #60a5fa);
         }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .header {
-            text-align: left;
-            margin-bottom: 20px;
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .urdu-text {
-            font-family: 'Noto Nastaliq Urdu', sans-serif;
-            color: #2e7d32;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
-        .break-words {
-            word-break: break-word;
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
         }
-        .animate-slide-in {
-            animation: slideIn 0.5s ease forwards;
+        .popup-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: slideIn 0.5s ease-out;
         }
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-        .animate-fade-in {
-            animation: fadeIn 0.8s ease forwards;
+        .popup-content button {
+            margin-top: 1rem;
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background 0.3s ease;
         }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        button {
-            transition: transform 0.2s ease, background-color 0.3s ease;
-        }
-        button:hover {
-            transform: scale(1.05);
-        }
-        input:focus {
-            transition: box-shadow 0.3s ease;
-            box-shadow: 0 0 8px rgba(46, 125, 50, 0.5);
-        }
-        .animate-pulse {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
+        .popup-content button:hover {
+            background: #1e40af;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header animate-fade-in">
-            <h1 class="text-5xl font-bold text-gray-800 mb-4">Danger 789x Team</h1>
-        </div>
-        <div class="bg-gray-200 p-6 rounded-lg shadow-lg transform transition-all duration-500 animate-fade-in">
-            <form method="POST" action="">
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2" for="number">Enter Phone Number or CNIC</label>
-                    <input type="text" name="number" value="" placeholder="e.g., 03338570120 or 3240214025071" class="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" />
-                                    </div>
-                <div class="flex space-x-4">
-                    <button type="submit" class="w-full bg-blue-500 text-white p-4 rounded-lg hover:bg-blue-600 text-lg">Search</button>
-                </div>
-            </form>
-        </div>
-        <div class="mt-4">
-            <button id="download-btn" class="bg-green-600 text-white p-3 rounded-lg hover:bg-green-700">Download as PNG</button>
-        </div>
-            </div>
-
     <script>
-        document.getElementById('download-btn').addEventListener('click', function() {
-            const element = document.getElementById('results-section');
-            if (element) {
-                html2canvas(element).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = 'sim-details.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                });
-            } else {
-                alert('No results to download. Please search first.');
+        // Prevent form resubmission on page reload
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+        // Debounce form submission to prevent double-clicks
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form');
+            let isSubmitting = false;
+            form.addEventListener('submit', (e) => {
+                if (isSubmitting) {
+                    e.preventDefault();
+                } else {
+                    isSubmitting = true;
+                    setTimeout(() => { isSubmitting = false; }, 2000);
+                }
+            });
+            // Show popup only once per session
+            if (!sessionStorage.getItem('popupShown')) {
+                const popup = document.getElementById('welcome-popup');
+                popup.style.display = 'flex';
+                sessionStorage.setItem('popupShown', 'true');
             }
+            // Open WhatsApp channel in new tab on button click
+            document.getElementById('join-channel').addEventListener('click', () => {
+                window.open('https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w', '_blank');
+                document.getElementById('welcome-popup').style.display = 'none';
+            });
         });
     </script>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Welcome Popup -->
+    <div id="welcome-popup" class="popup-overlay">
+        <div class="popup-content">
+            <h2 class="text-2xl font-bold text-blue-800 mb-4">
+                <a href="https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w" target="_blank" class="hover:underline">Welcome to SIM Database Lookup!</a>
+            </h2>
+            <p class="text-gray-700 mb-4">Join our WhatsApp channel for exclusive gifts and updates!</p>
+            <button id="join-channel">Join Now</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-blue-950 text-white py-6 shadow-lg">
+        <div class="container mx-auto text-center px-4">
+            <h1 class="text-3xl sm:text-4xl font-extrabold">SIM Database Lookup</h1>
+            <p class="text-base sm:text-lg mt-2">
+                <a href="https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w" target="_blank" class="hover:underline">Powered byDevil Malik </a>
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center py-8 px-4">
+        <div class="glass-effect p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-3xl">
+            <!-- Search Form -->
+            <form method="POST" class="mb-8">
+                <input type="hidden" name="form_token" value="f041899965c29067f3e6bf052658d67b">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                    <input 
+                        type="text" 
+                        name="search_term" 
+                        placeholder="Enter Phone Number or CNIC (e.g., 92333563 or 324021402)" 
+                        class="w-full p-4 border border-gray-300 rounded-xl sm:rounded-l-xl focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/80 text-gray-800"
+                        value=""
+                        required
+                        pattern="[0-9+]{10,13}"
+                        title="Please enter a valid phone number (e.g., 92333..., 0333..., +92333...) or CNIC"
+                    >
+                    <button 
+                        type="submit" 
+                        class="w-full sm:w-auto bg-blue-600 text-white p-4 rounded-xl sm:rounded-r-xl hover:bg-blue-700 transition duration-300"
+                    >
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <!-- Error Message -->
+            
+            <!-- Results Cards -->
+                    </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-950 text-white py-6">
+        <div class="container mx-auto text-center px-4">
+            <p class="text-base sm:text-lg">
+                Developed by <a href="https://whatsapp.com/channel/0029Vb5zr9CCsU9Hgk6ARV3w" target="_blank" class="font-bold hover:underline">Devil Malik</a>
+            </p>
+            <p class="text-sm mt-2">&copy; 2025 DANGER 789X TEAM All Rights Reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
